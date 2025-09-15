@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Student Management System</title>
+<style>
+  /* Use the enhanced UI CSS from earlier */
+  /* ... (Use the enhanced UI CSS code provided earlier for styling) ... */
+  body {
+    background: linear-gradient(120deg, #e6e9f5 0%, #eef1f7 100%);
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  /* Full CSS from enhanced UI here */
+  .container {
+    max-width: 990px;
+    margin: 44px auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 12px 28px 0 rgba(34, 50, 84, 0.14), 0 2px 4px 0 rgba(34, 50, 84, 0.07);
+    padding: 2.3rem 3rem 2rem 3rem;
+  }
+  h1 {
+    color: #2460f0;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+  }
+  form {
+    background: #f8faff;
+    padding: 1.5rem 1rem 1.1rem 1rem;
+    border-radius: 14px;
+    margin-bottom: 2rem;
+    box-shadow: 0 0 10px #e3eaff40;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.2rem 1.7rem;
+    align-items: end;
+  }
+  label {
+    display: block;
+    color: #2666c5;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 6px;
+  }
+  input[type="text"], input[type="number"], select {
+    width: 100%;
+    padding: 12px 13px;
+    border: 1.9px solid #cfd7ee;
+    border-radius: 7px;
+    background: #fafdff;
+    font-size: 1rem;
+    transition: border-color 0.23s;
+  }
+  input:focus, select:focus {
+    border-color: #3b89f5;
+    outline: none;
+    background: #f0f8ff;
+  }
+  select[multiple] { height: 108px; }
+  .subjects-marks-grid {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.5rem 1rem;
+    align-items: center;
+    background: #e6efff;
+    border-radius: 9px;
+    padding: 0.5rem 1rem 0.3rem 1rem;
+    margin-bottom: 7px;
+  }
+  .subject-label {
+    font-size: 1rem;
+    color: #3272b9;
+    font-weight: 500;
+    margin-right: 3px;
+    align-self: center;
+  }
+  .subject-mark-input {
+    width: 80px;
+    padding: 8px 6px;
+    border-radius: 5px;
+    border: 1.5px solid #aad6fa;
+    background: #f0f8ff;
+    font-size: 1rem;
+  }
+  button, button[type="submit"] {
+    padding: 12px 19px;
+    background: linear-gradient(90deg, #357dff, #51b7ff 90%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.12rem;
+    font-weight: 700;
+    cursor: pointer;
+    grid-column: 1 / -1;
+    margin-top: 0.6rem;
+    transition: background 0.22s;
+  }
+  button:hover { background: linear-gradient(90deg, #1951bf, #238fff 87%); }
+  table {
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    width: 100%;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow:0 0 14px #e2eaff60;
+    margin-top: 19px;
+    font-size: 1rem;
+  }
+  thead th {
+    color: #2670d0;
+    font-weight: 700;
+    font-size: 1.08rem;
+    border-bottom: 2.5px solid #e4f0ff;
+    padding-bottom: 8px;
+    text-align: left;
+  }
+  tbody tr { background: #f7faff; transition: background 0.32s; }
+  tbody tr:hover { background: #e1f3fd !important; }
+  tbody td { padding: 12px 16px; border-radius: 7px; vertical-align: middle; }
+  button.action-btn {
+    background: #23b05b; color: #fff; font-weight: 600;
+    padding: 7px 15px; font-size: 0.97rem; border-radius: 7px; border: none;
+    margin-right: 6px; transition: background 0.14s;
+  }
+  button.action-btn:hover { background: #117c38; }
+  button.action-btn.delete {
+    background: #ff6262;
+  }
+  button.action-btn.delete:hover { background: #b80021; }
+  @media (max-width:750px) {
+    .container { padding: 1rem 0.6rem; }
+    form { grid-template-columns: 1fr; gap: 1.1rem;}
+    .subjects-marks-grid { grid-column: span 1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Student Management System</h1>
+
+  <form id="studentForm" autocomplete="off">
+    <input type="hidden" id="studentId" />
+    <div>
+      <label for="name">Name</label>
+      <input type="text" id="name" placeholder="Full name" required />
+    </div>
+    <div>
+      <label for="age">Age</label>
+      <input type="number" id="age" placeholder="Age" required min="1" />
+    </div>
+    <div>
+      <label for="roll_number">Roll Number</label>
+      <input type="text" id="roll_number" placeholder="Roll number" required />
+    </div>
+    <div>
+      <label for="class">Class</label>
+      <input type="text" id="class" placeholder="Class" required />
+    </div>
+    <div>
+      <label for="subjects">Subjects (select multiple)</label>
+      <select id="subjects" multiple required>
+        <option value="Math">Math</option>
+        <option value="Science">Science</option>
+        <option value="English">English</option>
+        <option value="History">History</option>
+        <option value="Geography">Geography</option>
+        <option value="Computer Science">Computer Science</option>
+        <option value="Physics">Physics</option>
+        <option value="Chemistry">Chemistry</option>
+      </select>
+    </div>
+
+    <div id="marksInputs" class="subjects-marks-grid"></div>
+    <button type="submit">Add / Update Student</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th><th>Age</th><th>Roll Number</th><th>Class</th>
+        <th>Subjects</th><th>Marks</th><th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="studentsTable"></tbody>
+  </table>
+</div>
+
+<script>
+const apiUrl = 'http://localhost:3000/students';
+
+document.getElementById('subjects').addEventListener('change', function() {
+  const marksDiv = document.getElementById('marksInputs');
+  marksDiv.innerHTML = '';
+  Array.from(this.selectedOptions).forEach(option => {
+    const wrap = document.createElement('div');
+    const label = document.createElement('span');
+    label.className = "subject-label";
+    label.textContent = option.value;
+    const markInput = document.createElement('input');
+    markInput.type = 'number';
+    markInput.min = 0;
+    markInput.max = 100;
+    markInput.placeholder = 'Marks';
+    markInput.className = "subject-mark-input";
+    markInput.name = `mark_${option.value}`;
+    wrap.appendChild(label);
+    wrap.appendChild(markInput);
+    marksDiv.appendChild(wrap);
+  });
+});
+
+function fetchStudents() {
+  fetch(apiUrl)
+    .then(res => res.json())
+    .then(students => {
+      const tbody = document.getElementById('studentsTable');
+      tbody.innerHTML = '';
+      students.forEach(student => {
+        let subs = [];
+        try {
+          subs = Array.isArray(student.subjects) ? student.subjects : JSON.parse(student.subjects);
+        } catch {
+          subs = student.subjects ? student.subjects.split(',') : [];
+        }
+        let marks = {};
+        try {
+          marks = typeof student.marks === "object" ? student.marks : JSON.parse(student.marks);
+        } catch {
+          marks = {};
+        }
+        tbody.innerHTML += `<tr>
+          <td>${student.name}</td>
+          <td>${student.age}</td>
+          <td>${student.roll_number}</td>
+          <td>${student.class}</td>
+          <td style="color:#2473b3"><b>${subs.join(', ')}</b></td>
+          <td>${Object.entries(marks).map(([sub, val]) =>
+            `<span style="background:#d2eeff;color:#1362a1;font-weight:600;padding:2px 9px;border-radius:7px;margin:2px 2px;">${sub}: ${val}</span>`
+            ).join('<br>')}</td>
+          <td>
+            <button class="action-btn" onclick='editStudent(${student.id}, "${student.name}", ${student.age}, "${student.roll_number}", "${student.class}", ${JSON.stringify(subs)}, ${JSON.stringify(marks)})'>Edit</button>
+            <button class="action-btn delete" onclick="deleteStudent(${student.id})">Delete</button>
+          </td>
+        </tr>`;
+      });
+    });
+}
+
+document.getElementById('studentForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const subjectsSelect = document.getElementById('subjects');
+  const selectedSubjects = Array.from(subjectsSelect.selectedOptions).map(option => option.value);
+  const marksInputs = document.querySelectorAll('#marksInputs input');
+  let marks = {};
+  marksInputs.forEach(input => {
+    const subj = input.name.replace('mark_', '');
+    marks[subj] = Number(input.value);
+  });
+  const id = document.getElementById('studentId').value;
+  const data = {
+    name: document.getElementById('name').value.trim(),
+    age: Number(document.getElementById('age').value),
+    roll_number: document.getElementById('roll_number').value.trim(),
+    class: document.getElementById('class').value.trim(),
+    subjects: selectedSubjects,
+    marks: marks
+  };
+  if (id) {
+    fetch(`${apiUrl}/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(() => {
+      resetForm();
+      fetchStudents();
+    });
+  } else {
+    fetch(apiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(() => {
+      resetForm();
+      fetchStudents();
+    });
+  }
+});
+
+function editStudent(id, name, age, roll_number, className, subjectsArray, marksObject) {
+  document.getElementById('studentId').value = id;
+  document.getElementById('name').value = name;
+  document.getElementById('age').value = age;
+  document.getElementById('roll_number').value = roll_number;
+  document.getElementById('class').value = className;
+  // Select the subjects
+  const subjectsSelect = document.getElementById('subjects');
+  Array.from(subjectsSelect.options).forEach(option => {
+    option.selected = subjectsArray.includes(option.value);
+  });
+  // Render marks inputs with values
+  const marksDiv = document.getElementById('marksInputs');
+  marksDiv.innerHTML = '';
+  subjectsArray.forEach(subject => {
+    const wrap = document.createElement('div');
+    const label = document.createElement('span');
+    label.className = "subject-label";
+    label.textContent = subject;
+    const markInput = document.createElement('input');
+    markInput.type = 'number';
+    markInput.min = 0;
+    markInput.max = 100;
+    markInput.placeholder = 'Marks';
+    markInput.className = "subject-mark-input";
+    markInput.name = `mark_${subject}`;
+    markInput.value = marksObject[subject] !== undefined ? marksObject[subject] : '';
+    wrap.appendChild(label);
+    wrap.appendChild(markInput);
+    marksDiv.appendChild(wrap);
+  });
+}
+
+function deleteStudent(id) {
+  fetch(`${apiUrl}/${id}`, { method: 'DELETE' }).then(() => fetchStudents());
+}
+
+function resetForm() {
+  document.getElementById('studentId').value = '';
+  document.getElementById('studentForm').reset();
+  document.getElementById('marksInputs').innerHTML = '';
+  const subjectsSelect = document.getElementById('subjects');
+  Array.from(subjectsSelect.options).forEach(option => option.selected = false);
+}
+
+fetchStudents();
+</script>
+
+</body>
+</html>

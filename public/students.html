@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Students List</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fa;
+    margin: 20px;
+    padding: 0;
+  }
+  h1 {
+    text-align: center;
+    color: #007BFF;
+  }
+  table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+  }
+  th {
+    background-color: #007BFF;
+    color: white;
+  }
+  tr:hover {
+    background-color: #f1f9ff;
+  }
+  .marks {
+    font-size: 0.9rem;
+    color: #333;
+  }
+  .marks span {
+    display: inline-block;
+    background-color: #d6eaff;
+    color: #1362a1;
+    padding: 2px 6px;
+    margin: 2px 4px 2px 0;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Students List</h1>
+
+<table id="studentsTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Roll Number</th>
+      <th>Class</th>
+      <th>Subjects</th>
+      <th>Marks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Student rows will be added here by JavaScript -->
+  </tbody>
+</table>
+
+<script>
+  const apiUrl = 'http://localhost:3000/students';
+
+  function fetchStudents() {
+    fetch(apiUrl)
+      .then(response => response.json())
+      .then(students => {
+        const tbody = document.querySelector('#studentsTable tbody');
+        tbody.innerHTML = '';
+
+        students.forEach(student => {
+          let subjects = [];
+          try {
+            subjects = Array.isArray(student.subjects) ? student.subjects : JSON.parse(student.subjects);
+          } catch {
+            subjects = student.subjects ? student.subjects.split(',') : [];
+          }
+
+          let marks = {};
+          try {
+            marks = typeof student.marks === 'object' ? student.marks : JSON.parse(student.marks);
+          } catch {
+            marks = {};
+          }
+
+          const marksHtml = Object.entries(marks)
+            .map(([subject, mark]) => `<span>${subject}: ${mark}</span>`)
+            .join('');
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${student.name}</td>
+            <td>${student.age}</td>
+            <td>${student.roll_number}</td>
+            <td>${student.class}</td>
+            <td>${subjects.join(', ')}</td>
+            <td class="marks">${marksHtml}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      })
+      .catch(error => {
+        console.error('Failed to fetch students:', error);
+      });
+  }
+
+  // Fetch and display students on page load
+  fetchStudents();
+</script>
+
+</body>
+</html>
